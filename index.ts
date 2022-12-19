@@ -2,7 +2,11 @@ var fs = require("fs");
 import multer, { Multer } from "multer";
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import * as dotenv from 'dotenv' 
+dotenv.config()
 const { v4: uuidv4 } = require("uuid");
+const MongoClient = require('mongodb').MongoClient;
+
 
 type dataType = {
   header: string;
@@ -28,6 +32,9 @@ const upload: Multer = multer();
 app.use(cors());
 
 const PORT = process.env.PORT || 4000;
+
+const url = process.env.MONGO_URL;
+const dbName = process.env.DB_NAME;
 
 // console.log(main(data));
 
@@ -159,9 +166,34 @@ app.post(
             const jsonData = JSON.parse(data);
             let youtubeWrappedData = YoutubeWrappedCalculator(jsonData);
             // console.log(jsonData);
-            return res
-              .status(200)
-              .send({ status: "success", message: youtubeWrappedData });
+
+            try {
+              MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err: any, client: { db: (arg0: string | undefined) => any; }) => {
+                if (err) {
+                  console.error(err);
+                  return res.status(500).send({ status: "error", errorMsg: err });
+                }
+                const db = client.db(dbName);
+                const collection = db.collection('youtubeWrappedData');
+              
+                collection.insertOne(youtubeWrappedData, (err: any, result: { insertedId: any; }) => {
+                  if (err) {
+                    console.error(err);
+                    return res.status(500).send({ status: "error", errorMsg: err });
+                  }
+                  console.log(`Saved youtubeWrappedData to MongoDB: ${result.insertedId}`);
+                  return res
+                  .status(200)
+                  .send({ status: "success", message: youtubeWrappedData });
+                });
+              });
+            } catch (error) {
+              
+            }
+
+            // return res
+            //   .status(200)
+            //   .send({ status: "success", message: youtubeWrappedData });
           } catch (error) {
             // handle error
             return res.status(400).send({ status: "error", errorMsg: error });
