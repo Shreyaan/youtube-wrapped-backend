@@ -176,7 +176,10 @@ app.post(
                 const db = client.db(dbName);
                 const collection = db.collection('youtubeWrappedData');
               
-                collection.insertOne(youtubeWrappedData, (err: any, result: { insertedId: any; }) => {
+                collection.insertOne({
+                  youtubeWrappedData,
+                  timestamp: { $currentDate: { date: true } }
+                }, (err: any, result: { insertedId: any; }) => {
                   if (err) {
                     console.error(err);
                     return res.status(500).send({ status: "error", errorMsg: err });
