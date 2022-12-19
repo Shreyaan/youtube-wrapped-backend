@@ -24,26 +24,31 @@ function YoutubeWrappedCalculator(data) {
     for (let i = 0; i < data.length; i++) {
         const element = data[i];
         //   console.log(element.subtitles);
-        if (element.header == "YouTube Music") {
-        }
-        else if (element.header == "YouTube") {
-            numOfVideos++;
-            if (!element.subtitles) {
-                numOfVideosRemoved++;
+        const timestamp = element.time;
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        if (year >= 2022) {
+            if (element.header == "YouTube Music") {
             }
-            else {
-                if (!listOfChannels[element.subtitles[0].name])
-                    listOfChannels[element.subtitles[0].name] = 1;
-                else {
-                    listOfChannels[element.subtitles[0].name] =
-                        listOfChannels[element.subtitles[0].name] + 1;
+            else if (element.header == "YouTube") {
+                numOfVideos++;
+                if (!element.subtitles) {
+                    numOfVideosRemoved++;
                 }
-            }
-            if (listOfVideos[element.title]) {
-                listOfVideos[element.title] = listOfVideos[element.title] + 1;
-            }
-            else {
-                listOfVideos[element.title] = 1;
+                else {
+                    if (!listOfChannels[element.subtitles[0].name])
+                        listOfChannels[element.subtitles[0].name] = 1;
+                    else {
+                        listOfChannels[element.subtitles[0].name] =
+                            listOfChannels[element.subtitles[0].name] + 1;
+                    }
+                }
+                if (listOfVideos[element.title]) {
+                    listOfVideos[element.title] = listOfVideos[element.title] + 1;
+                }
+                else {
+                    listOfVideos[element.title] = 1;
+                }
             }
         }
     }
