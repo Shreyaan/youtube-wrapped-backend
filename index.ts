@@ -83,6 +83,18 @@ function YoutubeWrappedCalculator(data: any) {
   });
 }
 
+// app .get / should return a welcome message in html p tag with the text "Welcome to the Youtube Wrapped API to use go to link in a tag localhost:4000 "
+
+app.get("/", (req: Request, res: Response) => {
+  res.send(
+    `<p>
+    Welcome to the Youtube Wrapped
+    To use it go <a href="https://youtube-wrapped.anosher.com/">here</a>
+</p>`
+  );
+});
+
+// app .post /api/uploadjson should accept a json file and return the data in the json file in the response
 app.post(
   "/api/uploadjson",
   upload.single("jsonFile"),

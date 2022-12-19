@@ -7,7 +7,7 @@ var fs = require("fs");
 const multer_1 = __importDefault(require("multer"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const app = (0, express_1.default)();
 const upload = (0, multer_1.default)();
 app.use((0, cors_1.default)());
@@ -58,6 +58,14 @@ function YoutubeWrappedCalculator(data) {
         topVids: sortedVidsArray.slice(0, 21),
     });
 }
+// app .get / should return a welcome message in html p tag with the text "Welcome to the Youtube Wrapped API to use go to link in a tag localhost:4000 "
+app.get("/", (req, res) => {
+    res.send(`<p>
+    Welcome to the Youtube Wrapped
+    To use it go <a href="https://youtube-wrapped.anosher.com/">here</a>
+</p>`);
+});
+// app .post /api/uploadjson should accept a json file and return the data in the json file in the response
 app.post("/api/uploadjson", upload.single("jsonFile"), (req, res) => {
     const file = req.file;
     // console.log(file);
@@ -79,7 +87,7 @@ app.post("/api/uploadjson", upload.single("jsonFile"), (req, res) => {
                     const jsonData = JSON.parse(data);
                     let youtubeWrappedData = YoutubeWrappedCalculator(jsonData);
                     // console.log(jsonData);
-                    res
+                    return res
                         .status(200)
                         .send({ status: "success", message: youtubeWrappedData });
                 }
